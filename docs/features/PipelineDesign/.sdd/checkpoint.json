@@ -1,0 +1,11 @@
+{
+  \"feature\": \"PipelineDesign\",
+  \"phase\": \"3\",
+  \"phaseName\": \"Module Development\",
+  \"gateApprovals\": {
+    \"1\": true,
+    \"2\": true,
+    \"3\": true
+  },
+  \"updatedAt\": \"2026-06-02T15:57:00Z\"
+}
