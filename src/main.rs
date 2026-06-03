@@ -1,4 +1,4 @@
-use hello_world::{Data, Processor, Pipeline, pipeline, PipelineError};
+use hello_world::{Data, Processor, pipeline, PipelineError};
 use std::sync::Arc;
 use std::any::Any;
 
@@ -86,16 +86,16 @@ fn main() {
     let p2 = Arc::new(ValidateProcessor { min_value: 10 });
     let p3 = Arc::new(MultiplyProcessor { factor: 2 });
     
-    let mut pipeline = pipeline(p1).chain(p2).chain(p3);
+    let mut pipeline1 = pipeline(p1).chain(p2).chain(p3);
     let data: Arc<dyn Data> = Arc::new(NumberData { value: 42 });
     
-    match pipeline.run(data) {
+    match pipeline1.run(data) {
         Ok(result) => {
             let num = result.as_any().downcast_ref::<NumberData>().unwrap();
             println!("\n✅ Final result: {}\n", num.value);
             
             println!("Processing history:");
-            for record in pipeline.history() {
+            for record in pipeline1.history() {
                 println!("  - Processor: {}", record.processor_name);
                 if let Some(output) = &record.output {
                     let out_num = output.as_any().downcast_ref::<NumberData>().unwrap();
@@ -112,10 +112,10 @@ fn main() {
     let p2 = Arc::new(ValidateProcessor { min_value: 50 });
     let p3 = Arc::new(MultiplyProcessor { factor: 2 });
     
-    let mut pipeline = pipeline(p1).chain(p2).chain(p3);
+    let mut pipeline2 = pipeline(p1).chain(p2).chain(p3);
     let data: Arc<dyn Data> = Arc::new(NumberData { value: 42 });
     
-    match pipeline.run(data) {
+    match pipeline2.run(data) {
         Ok(result) => {
             let num = result.as_any().downcast_ref::<NumberData>().unwrap();
             println!("✅ Final result: {}", num.value);
@@ -123,7 +123,7 @@ fn main() {
         Err(e) => {
             println!("❌ Pipeline failed: {}", e);
             println!("\nFailed at processor:");
-            for record in pipeline.history() {
+            for record in pipeline2.history() {
                 if let Some(error) = &record.error {
                     println!("  - {}: {}", record.processor_name, error);
                 }
