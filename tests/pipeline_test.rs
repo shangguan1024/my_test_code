@@ -187,3 +187,57 @@ fn test_pipeline_empty() {
         _ => panic!("Expected EmptyPipeline error"),
     }
 }
+
+#[test]
+fn test_dump_successful_run() {
+    let processor1: Arc<dyn Processor> = Arc::new(IncrementProcessor);
+    let processor2: Arc<dyn Processor> = Arc::new(DoubleProcessor);
+    
+    let mut pipe = pipeline(processor1).chain(processor2);
+    let data: Arc<dyn Data> = Arc::new(NumberData { value: 5 });
+    let _ = pipe.run(data);
+    
+    let dump = pipe.dump();
+    assert!(dump.starts_with("Pipeline[2 processors]:"));
+    assert!(dump.contains("Step 1: IncrementProcessor -> Ok (input=Data, output=Data)"));
+    assert!(dump.contains("Step 2: DoubleProcessor -> Ok (input=Data, output=Data)"));
+}
+
+#[test]
+fn test_dump_error_run() {
+    let processor1: Arc<dyn Processor> = Arc::new(IncrementProcessor);
+    let processor2: Arc<dyn Processor> = Arc::new(ErrorProcessor);
+    let processor3: Arc<dyn Processor> = Arc::new(DoubleProcessor);
+    
+    let mut pipe = pipeline(processor1).chain(processor2).chain(processor3);
+    let data: Arc<dyn Data> = Arc::new(NumberData { value: 10 });
+    let _ = pipe.run(data);
+    
+    let dump = pipe.dump();
+    assert!(dump.starts_with("Pipeline[3 processors]:"));
+    assert!(dump.contains("Step 1: IncrementProcessor -> Ok (input=Data, output=Data)"));
+    assert!(dump.contains("Step 2: ErrorProcessor -> Err(Processing error: Intentional error)"));
+    assert!(dump.contains("Step 3: DoubleProcessor -> [skipped: error short-circuited]"));
+}
+
+#[test]
+fn test_dump_before_run() {
+    let processor: Arc<dyn Processor> = Arc::new(IncrementProcessor);
+    let pipe = pipeline(processor);
+    
+    let dump = pipe.dump();
+    assert!(dump.starts_with("Pipeline[1 processors]:"));
+    assert!(dump.contains("(not yet executed)"));
+}
+
+#[test]
+fn test_dump_empty_pipeline() {
+    let pipe = Pipeline {
+        processors: Vec::new(),
+        history: Vec::new(),
+    };
+    
+    let dump = pipe.dump();
+    assert!(dump.starts_with("Pipeline[0 processors]:"));
+    assert!(dump.contains("(empty)"));
+}

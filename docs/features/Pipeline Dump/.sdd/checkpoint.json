@@ -1,0 +1,11 @@
+{
+  "feature": "Pipeline Dump",
+  "phase": "3",
+  "phaseName": "Module Development",
+  "gateApprovals": {
+    "1": true,
+    "2": true,
+    "3": true
+  },
+  "updatedAt": "2026-06-03T12:01:58.739Z"
+}

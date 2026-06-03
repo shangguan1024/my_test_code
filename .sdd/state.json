@@ -1,7 +1,7 @@
 {
-  "currentPhase": 0,
-  "featureName": "PipelineDesign",
-  "sessionId": "a2cg8n9m",
+  "currentPhase": 3,
+  "featureName": "Pipeline Dump",
+  "sessionId": "aaqhe3ur",
   "editCount": 0,
   "taskCount": 0,
   "perFileEdits": {},
@@ -9,6 +9,10 @@
   "lastRefreshAtTask": 0,
   "refreshCount": 0,
   "refreshHistory": [],
-  "gateApprovals": {},
+  "gateApprovals": {
+    "1": true,
+    "2": true,
+    "3": true
+  },
   "qualityProfile": "standard"
 }

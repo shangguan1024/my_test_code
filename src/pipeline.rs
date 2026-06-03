@@ -73,4 +73,34 @@ impl Pipeline {
     pub fn history(&self) -> &[ProcessorRecord] {
         &self.history
     }
+
+    pub fn dump(&self) -> String {
+        let mut lines = Vec::new();
+        lines.push(format!("Pipeline[{} processors]:", self.processors.len()));
+
+        if self.history.is_empty() {
+            if self.processors.is_empty() {
+                lines.push("  (empty)".to_string());
+            } else {
+                lines.push("  (not yet executed)".to_string());
+            }
+        } else {
+            for (i, record) in self.history.iter().enumerate() {
+                let step = format!("  Step {}: {}", i + 1, record.processor_name);
+                if let Some(error) = &record.error {
+                    lines.push(format!("{} -> Err({})", step, error));
+                } else if record.output.is_some() {
+                    lines.push(format!("{} -> Ok (input=Data, output=Data)", step));
+                } else {
+                    lines.push(format!("{} -> (running)", step));
+                }
+            }
+            for i in self.history.len()..self.processors.len() {
+                lines.push(format!("  Step {}: {} -> [skipped: error short-circuited]",
+                    i + 1, self.processors[i].name()));
+            }
+        }
+
+        lines.join("\n")
+    }
 }
