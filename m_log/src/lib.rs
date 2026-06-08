@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::sync::Once;
 
 pub trait ModuleLog {
     const INFO: bool;
@@ -33,10 +34,13 @@ impl log::Log for SimpleLogger {
 }
 
 static LOGGER: SimpleLogger = SimpleLogger;
+static GLOBAL_INIT: Once = Once::new();
 
-pub fn init() {
-    let _ = log::set_logger(&LOGGER);
-    log::set_max_level(log::LevelFilter::Debug);
+pub fn global_init() {
+    GLOBAL_INIT.call_once(|| {
+        let _ = log::set_logger(&LOGGER);
+        log::set_max_level(log::LevelFilter::Debug);
+    });
 }
 
 pub use m_log_macros::define_module;
@@ -44,8 +48,11 @@ pub use m_log_macros::define_module;
 #[macro_export]
 macro_rules! m_info {
     ($module:ident, $($arg:tt)*) => {
-        if <$module as $crate::ModuleLog>::INFO {
-            log::info!($($arg)*);
+        {
+            $module::init();
+            if <$module as $crate::ModuleLog>::INFO {
+                log::info!($($arg)*);
+            }
         }
     };
 }
@@ -53,8 +60,11 @@ macro_rules! m_info {
 #[macro_export]
 macro_rules! m_warn {
     ($module:ident, $($arg:tt)*) => {
-        if <$module as $crate::ModuleLog>::WARN {
-            log::warn!($($arg)*);
+        {
+            $module::init();
+            if <$module as $crate::ModuleLog>::WARN {
+                log::warn!($($arg)*);
+            }
         }
     };
 }
@@ -62,8 +72,11 @@ macro_rules! m_warn {
 #[macro_export]
 macro_rules! m_error {
     ($module:ident, $($arg:tt)*) => {
-        if <$module as $crate::ModuleLog>::ERROR {
-            log::error!($($arg)*);
+        {
+            $module::init();
+            if <$module as $crate::ModuleLog>::ERROR {
+                log::error!($($arg)*);
+            }
         }
     };
 }
@@ -71,8 +84,11 @@ macro_rules! m_error {
 #[macro_export]
 macro_rules! m_debug {
     ($module:ident, $($arg:tt)*) => {
-        if <$module as $crate::ModuleLog>::DEBUG {
-            log::debug!($($arg)*);
+        {
+            $module::init();
+            if <$module as $crate::ModuleLog>::DEBUG {
+                log::debug!($($arg)*);
+            }
         }
     };
 }

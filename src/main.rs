@@ -1,5 +1,5 @@
 use hello_world::{Data, Processor, ProcessorModule, pipeline, PipelineError};
-use m_log::{define_module, m_info, m_error, init as m_log_init};
+use m_log::{define_module, m_info, m_error};
 use std::sync::Arc;
 use std::any::Any;
 
@@ -82,8 +82,6 @@ impl Processor for MultiplyProcessor {
 }
 
 fn main() {
-    m_log_init();
-
     main_info!("=== Pipeline Demo ===");
     
     main_info!("Example 1: Normal processing flow");

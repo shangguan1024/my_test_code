@@ -1,4 +1,4 @@
-use hello_world::{ModuleLog, m_log};
+use hello_world::ModuleLog;
 use m_log::{define_module, m_info, m_warn, m_error, m_debug};
 
 define_module!(TestMod, info=true, warn=true, error=true, debug=false);
@@ -20,7 +20,6 @@ fn test_module_log_trait_impl() {
 
 #[test]
 fn test_convenience_macros_compile() {
-    m_log::init();
     testmod_info!("test info message");
     testmod_warn!("test warn message");
     testmod_error!("test error message");
@@ -29,13 +28,11 @@ fn test_convenience_macros_compile() {
 
 #[test]
 fn test_m_info_macro_enabled() {
-    m_log::init();
     m_info!(TestMod, "test log output");
 }
 
 #[test]
 fn test_req005_off_switch_no_output() {
-    m_log::init();
     offmod_info!("should not appear");
     offmod_warn!("should not appear");
     offmod_error!("should not appear");
@@ -48,7 +45,6 @@ fn test_req005_off_switch_no_output() {
 
 #[test]
 fn test_req006_on_switch_outputs_log() {
-    m_log::init();
     assert!(TestMod::INFO);
     assert!(TestMod::ERROR);
     m_info!(TestMod, "REQ-006: ON switch should output");
@@ -57,7 +53,6 @@ fn test_req006_on_switch_outputs_log() {
 
 #[test]
 fn test_req008_init_sets_logger() {
-    m_log::init();
     m_info!(TestMod, "REQ-008: logger initialized");
 }
 

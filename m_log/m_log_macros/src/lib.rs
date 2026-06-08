@@ -72,8 +72,25 @@ pub fn define_module(input: TokenStream) -> TokenStream {
     let error_macro = Ident::new(&format!("{}_error", name_lower), name.span());
     let debug_macro = Ident::new(&format!("{}_debug", name_lower), name.span());
 
+    let inited_var = Ident::new(&format!("{}_MODULE_INITED", name.to_string().to_uppercase()), name.span());
+    
     let expanded = quote! {
+        thread_local! {
+            static #inited_var: std::cell::Cell<bool> = std::cell::Cell::new(false);
+        }
+
         pub struct #name;
+
+        impl #name {
+            pub fn init() {
+                #inited_var.with(|inited| {
+                    if !inited.get() {
+                        m_log::global_init();
+                        inited.set(true);
+                    }
+                });
+            }
+        }
 
         impl m_log::ModuleLog for #name {
             const INFO: bool = #info_val;
