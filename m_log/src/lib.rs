@@ -39,10 +39,12 @@ pub fn init() {
     log::set_max_level(log::LevelFilter::Debug);
 }
 
+pub use m_log_macros::define_module;
+
 #[macro_export]
 macro_rules! m_info {
     ($module:ident, $($arg:tt)*) => {
-        if <$module as $crate::m_log::ModuleLog>::INFO {
+        if <$module as $crate::ModuleLog>::INFO {
             log::info!($($arg)*);
         }
     };
@@ -51,7 +53,7 @@ macro_rules! m_info {
 #[macro_export]
 macro_rules! m_warn {
     ($module:ident, $($arg:tt)*) => {
-        if <$module as $crate::m_log::ModuleLog>::WARN {
+        if <$module as $crate::ModuleLog>::WARN {
             log::warn!($($arg)*);
         }
     };
@@ -60,7 +62,7 @@ macro_rules! m_warn {
 #[macro_export]
 macro_rules! m_error {
     ($module:ident, $($arg:tt)*) => {
-        if <$module as $crate::m_log::ModuleLog>::ERROR {
+        if <$module as $crate::ModuleLog>::ERROR {
             log::error!($($arg)*);
         }
     };
@@ -69,7 +71,7 @@ macro_rules! m_error {
 #[macro_export]
 macro_rules! m_debug {
     ($module:ident, $($arg:tt)*) => {
-        if <$module as $crate::m_log::ModuleLog>::DEBUG {
+        if <$module as $crate::ModuleLog>::DEBUG {
             log::debug!($($arg)*);
         }
     };

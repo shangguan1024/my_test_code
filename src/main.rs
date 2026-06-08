@@ -1,4 +1,5 @@
-use hello_world::{Data, Processor, pipeline, PipelineError, m_log, define_module, m_info, m_warn, m_error, m_debug};
+use hello_world::{Data, Processor, ProcessorModule, pipeline, PipelineError};
+use m_log::{define_module, m_info, m_error, init as m_log_init};
 use std::sync::Arc;
 use std::any::Any;
 
@@ -27,7 +28,7 @@ impl Processor for IncrementProcessor {
     
     fn process(&self, data: Arc<dyn Data>) -> Result<Arc<dyn Data>, PipelineError> {
         if let Some(num) = data.as_any().downcast_ref::<NumberData>() {
-            main_info!("IncrementProcessor: {} -> {}", num.value, num.value + 1);
+            m_info!(ProcessorModule, "IncrementProcessor: {} -> {}", num.value, num.value + 1);
             Ok(Arc::new(NumberData { value: num.value + 1 }))
         } else {
             Err(PipelineError::TypeError("Expected NumberData".to_string()))
@@ -46,7 +47,7 @@ impl Processor for ValidateProcessor {
     
     fn process(&self, data: Arc<dyn Data>) -> Result<Arc<dyn Data>, PipelineError> {
         if let Some(num) = data.as_any().downcast_ref::<NumberData>() {
-            main_info!("ValidateProcessor: checking {} >= {}", num.value, self.min_value);
+            m_info!(ProcessorModule, "ValidateProcessor: checking {} >= {}", num.value, self.min_value);
             if num.value >= self.min_value {
                 Ok(data.clone_data())
             } else {
@@ -72,7 +73,7 @@ impl Processor for MultiplyProcessor {
     fn process(&self, data: Arc<dyn Data>) -> Result<Arc<dyn Data>, PipelineError> {
         if let Some(num) = data.as_any().downcast_ref::<NumberData>() {
             let new_value = num.value * self.factor;
-            main_info!("MultiplyProcessor: {} * {} = {}", num.value, self.factor, new_value);
+            m_info!(ProcessorModule, "MultiplyProcessor: {} * {} = {}", num.value, self.factor, new_value);
             Ok(Arc::new(NumberData { value: new_value }))
         } else {
             Err(PipelineError::TypeError("Expected NumberData".to_string()))
@@ -81,7 +82,7 @@ impl Processor for MultiplyProcessor {
 }
 
 fn main() {
-    m_log::init();
+    m_log_init();
 
     main_info!("=== Pipeline Demo ===");
     

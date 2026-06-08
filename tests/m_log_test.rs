@@ -1,4 +1,5 @@
-use hello_world::{m_info, m_warn, m_error, m_debug, ModuleLog, m_log, define_module};
+use hello_world::{ModuleLog, m_log};
+use m_log::{define_module, m_info, m_warn, m_error, m_debug};
 
 define_module!(TestMod, info=true, warn=true, error=true, debug=false);
 
@@ -62,7 +63,7 @@ fn test_req008_init_sets_logger() {
 
 #[test]
 fn test_req009_no_business_hardcoding() {
-    let m_log_source = include_str!("../src/m_log.rs");
+    let m_log_source = include_str!("../m_log/src/lib.rs");
     assert!(!m_log_source.contains("Pipeline"), "REQ-009: m_log.rs must not hardcode Pipeline");
     assert!(!m_log_source.contains("DataModule"), "REQ-009: m_log.rs must not hardcode Data");
     assert!(!m_log_source.contains("MainModule"), "REQ-009: m_log.rs must not hardcode Main");

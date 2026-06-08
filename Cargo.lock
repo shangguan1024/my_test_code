@@ -7,7 +7,7 @@ name = "hello_world"
 version = "0.1.0"
 dependencies = [
  "log",
- "m_log_macros",
+ "m_log",
 ]
 
 [[package]]
@@ -15,6 +15,14 @@ name = "log"
 version = "0.4.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "953f07c43838f8e6f9758cab68bf5bed85465e7587ebe0b823f1bcd81978ad3a"
+
+[[package]]
+name = "m_log"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "m_log_macros",
+]
 
 [[package]]
 name = "m_log_macros"

@@ -75,7 +75,7 @@ pub fn define_module(input: TokenStream) -> TokenStream {
     let expanded = quote! {
         pub struct #name;
 
-        impl crate::m_log::ModuleLog for #name {
+        impl m_log::ModuleLog for #name {
             const INFO: bool = #info_val;
             const WARN: bool = #warn_val;
             const ERROR: bool = #error_val;

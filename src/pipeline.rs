@@ -2,6 +2,9 @@ use std::sync::Arc;
 use crate::data::Data;
 use crate::processor::Processor;
 use crate::error::PipelineError;
+use m_log::{define_module, m_info, m_error};
+
+define_module!(PipelineModule, info=true, warn=true, error=true, debug=false);
 
 pub struct ProcessorRecord {
     pub processor_name: String,
@@ -37,6 +40,7 @@ impl Pipeline {
             return Err(PipelineError::EmptyPipeline);
         }
         
+        pipelinemodule_info!("Pipeline starting with {} processors", self.processors.len());
         self.history.clear();
         let mut current_data = data;
         
@@ -56,17 +60,20 @@ impl Pipeline {
                     if let Some(last_record) = self.history.last_mut() {
                         last_record.output = Some(output_data.clone_data());
                     }
+                    pipelinemodule_info!("Step '{}' completed successfully", processor.name());
                     current_data = output_data;
                 }
                 Err(error) => {
                     if let Some(last_record) = self.history.last_mut() {
                         last_record.error = Some(error.clone());
                     }
+                    pipelinemodule_error!("Step '{}' failed: {}", processor.name(), error);
                     return Err(error);
                 }
             }
         }
         
+        pipelinemodule_info!("Pipeline completed successfully");
         Ok(current_data)
     }
     

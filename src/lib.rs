@@ -48,11 +48,12 @@ mod error;
 mod data;
 mod processor;
 mod pipeline;
-pub mod m_log;
 
 pub use error::PipelineError;
 pub use data::Data;
-pub use processor::Processor;
-pub use pipeline::{Pipeline, ProcessorRecord, pipeline};
+pub use processor::{Processor, ProcessorModule};
+pub use pipeline::{Pipeline, ProcessorRecord, pipeline, PipelineModule};
+pub use m_log;
 pub use m_log::ModuleLog;
-pub use m_log_macros::define_module;
+pub use m_log::define_module;
+pub use m_log::{m_info, m_warn, m_error, m_debug};

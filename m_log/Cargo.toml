@@ -1,0 +1,8 @@
+[package]
+name = "m_log"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+log = "0.4"
+m_log_macros = { path = "m_log_macros" }
