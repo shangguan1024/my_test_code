@@ -1,0 +1,10 @@
+{
+  "feature": "日志过滤",
+  "phase": "1",
+  "phaseName": "Requirements & Design",
+  "gateApprovals": {
+    "1": true
+  },
+  "gitSha": "fd8b64e8ea68a42a14c0be3ef074d769a419f033",
+  "updatedAt": "2026-06-08T11:40:03.995Z"
+}

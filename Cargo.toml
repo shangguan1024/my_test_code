@@ -3,4 +3,9 @@ name = "hello_world"
 version = "0.1.0"
 edition = "2021"
 
+[workspace]
+members = ["m_log_macros"]
+
 [dependencies]
+log = "0.4"
+m_log_macros = { path = "m_log_macros" }

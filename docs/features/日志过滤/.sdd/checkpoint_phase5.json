@@ -1,0 +1,13 @@
+{
+  "feature": "日志过滤",
+  "phase": "5",
+  "phaseName": "Code Quality Review",
+  "gateApprovals": {
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true
+  },
+  "gitSha": "fd8b64e8ea68a42a14c0be3ef074d769a419f033",
+  "updatedAt": "2026-06-08T13:12:09.460Z"
+}

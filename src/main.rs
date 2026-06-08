@@ -1,6 +1,8 @@
-use hello_world::{Data, Processor, pipeline, PipelineError};
+use hello_world::{Data, Processor, pipeline, PipelineError, m_log, define_module, m_info, m_warn, m_error, m_debug};
 use std::sync::Arc;
 use std::any::Any;
+
+define_module!(Main, info=true, warn=true, error=true, debug=false);
 
 struct NumberData {
     value: i32,
@@ -25,7 +27,7 @@ impl Processor for IncrementProcessor {
     
     fn process(&self, data: Arc<dyn Data>) -> Result<Arc<dyn Data>, PipelineError> {
         if let Some(num) = data.as_any().downcast_ref::<NumberData>() {
-            println!("IncrementProcessor: {} -> {}", num.value, num.value + 1);
+            main_info!("IncrementProcessor: {} -> {}", num.value, num.value + 1);
             Ok(Arc::new(NumberData { value: num.value + 1 }))
         } else {
             Err(PipelineError::TypeError("Expected NumberData".to_string()))
@@ -44,7 +46,7 @@ impl Processor for ValidateProcessor {
     
     fn process(&self, data: Arc<dyn Data>) -> Result<Arc<dyn Data>, PipelineError> {
         if let Some(num) = data.as_any().downcast_ref::<NumberData>() {
-            println!("ValidateProcessor: checking {} >= {}", num.value, self.min_value);
+            main_info!("ValidateProcessor: checking {} >= {}", num.value, self.min_value);
             if num.value >= self.min_value {
                 Ok(data.clone_data())
             } else {
@@ -70,7 +72,7 @@ impl Processor for MultiplyProcessor {
     fn process(&self, data: Arc<dyn Data>) -> Result<Arc<dyn Data>, PipelineError> {
         if let Some(num) = data.as_any().downcast_ref::<NumberData>() {
             let new_value = num.value * self.factor;
-            println!("MultiplyProcessor: {} * {} = {}", num.value, self.factor, new_value);
+            main_info!("MultiplyProcessor: {} * {} = {}", num.value, self.factor, new_value);
             Ok(Arc::new(NumberData { value: new_value }))
         } else {
             Err(PipelineError::TypeError("Expected NumberData".to_string()))
@@ -79,9 +81,11 @@ impl Processor for MultiplyProcessor {
 }
 
 fn main() {
-    println!("=== Pipeline Demo ===\n");
+    m_log::init();
+
+    main_info!("=== Pipeline Demo ===");
     
-    println!("Example 1: Normal processing flow");
+    main_info!("Example 1: Normal processing flow");
     let p1 = Arc::new(IncrementProcessor);
     let p2 = Arc::new(ValidateProcessor { min_value: 10 });
     let p3 = Arc::new(MultiplyProcessor { factor: 2 });
@@ -92,21 +96,21 @@ fn main() {
     match pipeline1.run(data) {
         Ok(result) => {
             let num = result.as_any().downcast_ref::<NumberData>().unwrap();
-            println!("\n✅ Final result: {}\n", num.value);
+            main_info!("Final result: {}", num.value);
             
-            println!("Processing history:");
+            main_info!("Processing history:");
             for record in pipeline1.history() {
-                println!("  - Processor: {}", record.processor_name);
+                main_info!("  Processor: {}", record.processor_name);
                 if let Some(output) = &record.output {
                     let out_num = output.as_any().downcast_ref::<NumberData>().unwrap();
-                    println!("    Output: {}", out_num.value);
+                    main_info!("    Output: {}", out_num.value);
                 }
             }
         }
-        Err(e) => println!("\n❌ Error: {}\n", e),
+        Err(e) => main_error!("Error: {}", e),
     }
     
-    println!("\n=== Example 2: Error handling (short-circuit) ===\n");
+    main_info!("=== Example 2: Error handling (short-circuit) ===");
     
     let p1 = Arc::new(IncrementProcessor);
     let p2 = Arc::new(ValidateProcessor { min_value: 50 });
@@ -118,18 +122,18 @@ fn main() {
     match pipeline2.run(data) {
         Ok(result) => {
             let num = result.as_any().downcast_ref::<NumberData>().unwrap();
-            println!("✅ Final result: {}", num.value);
+            main_info!("Final result: {}", num.value);
         }
         Err(e) => {
-            println!("❌ Pipeline failed: {}", e);
-            println!("\nFailed at processor:");
+            main_error!("Pipeline failed: {}", e);
+            main_error!("Failed at processor:");
             for record in pipeline2.history() {
                 if let Some(error) = &record.error {
-                    println!("  - {}: {}", record.processor_name, error);
+                    main_error!("  {}: {}", record.processor_name, error);
                 }
             }
         }
     }
     
-    println!("\n=== Pipeline Demo Complete ===");
+    main_info!("=== Pipeline Demo Complete ===");
 }
