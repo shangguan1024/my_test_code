@@ -2,14 +2,14 @@ use std::sync::Arc;
 use crate::data::Data;
 use crate::error::PipelineError;
 use m_log::{m_info, m_error};
-use super::{Pipeline, ProcessorRecord, PipelineModule};
+use super::{Pipeline, ProcessorRecord, PipelineLog};
 
 pub fn run_pipeline(pipeline: &mut Pipeline, data: Arc<dyn Data>) -> Result<Arc<dyn Data>, PipelineError> {
     if pipeline.processors.is_empty() {
         return Err(PipelineError::EmptyPipeline);
     }
     
-    pipelinemodule_info!("Pipeline starting with {} processors", pipeline.processors.len());
+    pipelinelog_info!("Pipeline starting with {} processors", pipeline.processors.len());
     pipeline.history.clear();
     let mut current_data = data;
     
@@ -29,19 +29,19 @@ pub fn run_pipeline(pipeline: &mut Pipeline, data: Arc<dyn Data>) -> Result<Arc<
                 if let Some(last_record) = pipeline.history.last_mut() {
                     last_record.output = Some(output_data.clone_data());
                 }
-                pipelinemodule_info!("Step '{}' completed successfully", processor.name());
+                pipelinelog_info!("Step '{}' completed successfully", processor.name());
                 current_data = output_data;
             }
             Err(error) => {
                 if let Some(last_record) = pipeline.history.last_mut() {
                     last_record.error = Some(error.clone());
                 }
-                pipelinemodule_error!("Step '{}' failed: {}", processor.name(), error);
+                pipelinelog_error!("Step '{}' failed: {}", processor.name(), error);
                 return Err(error);
             }
         }
     }
     
-    pipelinemodule_info!("Pipeline completed successfully");
+    pipelinelog_info!("Pipeline completed successfully");
     Ok(current_data)
 }

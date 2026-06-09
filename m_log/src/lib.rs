@@ -48,11 +48,9 @@ pub use m_log_macros::define_module;
 #[macro_export]
 macro_rules! m_info {
     ($module:ident, $($arg:tt)*) => {
-        {
+        if <$module as $crate::ModuleLog>::INFO {
             $module::init();
-            if <$module as $crate::ModuleLog>::INFO {
-                log::info!($($arg)*);
-            }
+            log::info!($($arg)*);
         }
     };
 }
@@ -60,11 +58,9 @@ macro_rules! m_info {
 #[macro_export]
 macro_rules! m_warn {
     ($module:ident, $($arg:tt)*) => {
-        {
+        if <$module as $crate::ModuleLog>::WARN {
             $module::init();
-            if <$module as $crate::ModuleLog>::WARN {
-                log::warn!($($arg)*);
-            }
+            log::warn!($($arg)*);
         }
     };
 }
@@ -72,11 +68,9 @@ macro_rules! m_warn {
 #[macro_export]
 macro_rules! m_error {
     ($module:ident, $($arg:tt)*) => {
-        {
+        if <$module as $crate::ModuleLog>::ERROR {
             $module::init();
-            if <$module as $crate::ModuleLog>::ERROR {
-                log::error!($($arg)*);
-            }
+            log::error!($($arg)*);
         }
     };
 }
@@ -84,11 +78,9 @@ macro_rules! m_error {
 #[macro_export]
 macro_rules! m_debug {
     ($module:ident, $($arg:tt)*) => {
-        {
+        if <$module as $crate::ModuleLog>::DEBUG {
             $module::init();
-            if <$module as $crate::ModuleLog>::DEBUG {
-                log::debug!($($arg)*);
-            }
+            log::debug!($($arg)*);
         }
     };
 }

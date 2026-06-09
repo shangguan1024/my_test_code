@@ -4,7 +4,7 @@ use crate::error::PipelineError;
 use crate::Processor;
 use m_log::define_module;
 
-define_module!(PipelineModule, info=true, warn=true, error=true, debug=false);
+define_module!(PipelineLog, info=true, warn=true, error=true, debug=false);
 
 mod runner;
 
