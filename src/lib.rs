@@ -52,7 +52,7 @@ mod pipeline;
 pub use error::PipelineError;
 pub use data::Data;
 pub use processor::{Processor, ProcessorModule};
-pub use pipeline::{Pipeline, ProcessorRecord, pipeline, PipelineModule};
+pub use pipeline::{Pipeline, ProcessorRecord, pipeline};
 pub use m_log;
 pub use m_log::ModuleLog;
 pub use m_log::define_module;
